@@ -15,3 +15,27 @@
 button {
     @apply focus:outline-none focus:ring-2 focus:ring-offset-gray-800 focus:ring-offset-2 focus:ring-blue-600
 }
+
+#ing-print-root {
+    width: 3in;
+    height: 1.125in;
+    @apply hidden;
+}
+
+@media print {
+    #root {
+        display: none !important;
+    }
+
+    #ing-print-root {
+        @apply fixed top-0 left-0;
+        display: block;
+    }
+
+    @page {
+        margin: 0 0 0 64px;
+        width: 3.5in;
+        height: 1.125in;
+        size: landscape;
+    }
+}

@@ -10,16 +10,21 @@ const InProgressItem = (props) => {
     <div className="flex items-center space-x-2 px-2 py-1 w-full">
       <h3 className="w-1/6">{props.sale.TicketNumber}</h3>
       <p className="w-1/2">
-        {props.sale.CustomerEntered
+        {props.sale.FirstName || props.sale.LastName
           ? `${props.sale.FirstName} ${props.sale.LastName}`
           : props.sale.CheckDescription}
       </p>
       <div className="w-1/3 flex items-center justify-end space-x-2">
-        {props.sale.Phone && (
+        {(props.sale.Phone || props.sale.WebPhone) && (
           <button
             type="button"
             className="text-base bg-green-600 rounded-lg py-1 px-4 flex items-center justify-center space-x-2 focus:ring-green-600"
-            onClick={() => props.sendPhone(props.sale.SaleID, props.sale.Phone)}
+            onClick={() =>
+              props.sendPhone(
+                props.sale.SaleID,
+                props.sale.WebPhone ? props.sale.WebPhone : props.sale.Phone
+              )
+            }
           >
             <SmartphoneIcon className="h-6 w-6" />
           </button>
@@ -85,7 +90,6 @@ const Notifications = () => {
 
   const handleSendPhone = async (saleID, phone, index) => {
     let notif = await sendPhoneNotif(saleID, phone);
-    console.log(notif);
     if (notif) {
       let inProgressCopy = [...notifs.InProgress];
       inProgressCopy.splice(index, 1);
@@ -109,7 +113,7 @@ const Notifications = () => {
   };
 
   const getNotifs = async () => {
-    let notificationsRes = await fetch("http://192.168.1.11:8000/fpos/board/");
+    let notificationsRes = await fetch("http://192.168.1.86:8000/fpos/board/");
     setNotifs(await notificationsRes.json());
   };
 
@@ -159,12 +163,10 @@ const Notifications = () => {
             name="notif-filter"
             id="notif-filter"
             className="form-select text-center rounded-lg bg-gray-600 p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
-            value={notifFilter}
+            defaultValue="ALL"
             onChange={(e) => setNotifFilter(e.target.value)}
           >
-            <option value="ALL" selecetd>
-              All
-            </option>
+            <option value="ALL">All</option>
             <option value="BOARD">Board</option>
             <option value="PHONE">Phone</option>
           </select>

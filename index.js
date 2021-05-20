@@ -3,8 +3,6 @@ const path = require("path");
 
 let dev = false;
 
-console.log(process.env.NODE_ENV);
-
 if (
   process.env.NODE_ENV !== undefined &&
   process.env.NODE_ENV === "development"
@@ -21,7 +19,7 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1024,
     height: 768,
-    kiosk: true,
+    // kiosk: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,

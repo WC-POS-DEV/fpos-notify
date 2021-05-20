@@ -28,10 +28,10 @@ export const NavItem = (props) => {
 const Navbar = () => {
   return (
     <nav className="h-screen bg-gray-800 p-4 space-y-8">
-      <NavItem
+      {/* <NavItem
         to="/"
         icon={<DashboardIcon className="h-12 w-12 text-white" />}
-      />
+      /> */}
       <NavItem
         to="/sales"
         icon={<MenuIcon className="h-12 w-12 text-white" />}
@@ -44,10 +44,10 @@ const Navbar = () => {
         to="/notifications"
         icon={<BellIcon className="h-12 w-12 text-white" />}
       />
-      <NavItem
+      {/* <NavItem
         to="/settings"
         icon={<SettingsIcon className="h-12 w-12 text-white" />}
-      />
+      /> */}
     </nav>
   );
 };

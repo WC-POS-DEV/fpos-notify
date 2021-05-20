@@ -1,7 +1,7 @@
 const sendBoardNotif = async (saleID) => {
   try {
     let notifRes = await fetch(
-      `http://192.168.1.11:8000/fpos/notify/${saleID}/`
+      `http://192.168.1.86:8000/fpos/notify/${saleID}/`
     );
     return await notifRes.json();
   } catch (err) {
@@ -13,7 +13,7 @@ const sendBoardNotif = async (saleID) => {
 const sendPhoneNotif = async (saleID, phone) => {
   try {
     let notifRes = await fetch(
-      `http://192.168.1.11:8000/fpos/phone/${saleID}/${phone}/`
+      `http://192.168.1.86:8000/fpos/phone/${saleID}/${phone}/`
     );
     return await notifRes.json();
   } catch (err) {

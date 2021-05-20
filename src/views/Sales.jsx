@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 
 import {
   ArrowLeftIcon,
+  ClipboardIcon,
   CloseIcon,
+  HomeIcon,
+  MailIcon,
+  MessageIcon,
   MonitorIcon,
   RefreshIcon,
   SmartphoneIcon,
@@ -222,7 +226,7 @@ const SaleItem = (props) => {
     >
       <p className="w-1/6">{props.sale.TicketNumber}</p>
       <p className="w-1/2">
-        {props.sale.CustomerEntered
+        {props.sale.FirstName || props.sale.LastName
           ? `${props.sale.FirstName} ${props.sale.LastName}`
           : props.sale.CheckDescription}
       </p>
@@ -245,7 +249,7 @@ const SaleDetails = (props) => {
   const getSale = async () => {
     setSale(
       await (
-        await fetch(`http://192.168.1.11:8000/fpos/sale/id/${props.saleID}/`)
+        await fetch(`http://192.168.1.86:8000/fpos/sale/id/${props.saleID}/`)
       ).json()
     );
   };
@@ -256,7 +260,7 @@ const SaleDetails = (props) => {
 
   const sendBoardNotif = async () => {
     try {
-      await fetch(`http://192.168.1.11:8000/fpos/notify/${props.saleID}/`);
+      await fetch(`http://192.168.1.86:8000/fpos/notify/${props.saleID}/`);
     } catch (err) {
       console.error(err);
     }
@@ -265,7 +269,7 @@ const SaleDetails = (props) => {
   const sendPhoneNotif = async (phone) => {
     try {
       let phoneRes = await fetch(
-        `http://192.168.1.11:8000/fpos/phone/${props.saleID}/${phone}/`
+        `http://192.168.1.86:8000/fpos/phone/${props.saleID}/${phone}/`
       );
     } catch (err) {
       console.log(err);
@@ -308,14 +312,57 @@ const SaleDetails = (props) => {
               </h2>
             </div>
           </div>
-          <div className="flex-grow bg-gray-900 rounded-xl p-2 space-y-1 overflow-y-auto">
+          <div className="flex-grow bg-gray-900 rounded-xl p-2 space-y-1 overflow-y-auto hide-scroll">
             {sale.Items.map((item, index) => (
               <ReceiptItem item={item} key={index} />
             ))}
           </div>
+          {(sale.WebLastName ||
+            sale.WebPhone ||
+            sale.MozartOrderNumber ||
+            sale.WebComment) && (
+            <div className="p-2 space-y-1 bg-gray-900 rounded-xl">
+              {sale.WebLastName && (
+                <div className="flex items-center space-x-2">
+                  <UserIcon className="h-6 w-6" />
+                  <p>{sale.WebLastName}</p>
+                </div>
+              )}
+              {sale.WebPhone && (
+                <div className="flex items-center space-x-2">
+                  <SmartphoneIcon />
+                  <p>
+                    {`(${sale.WebPhone.substring(
+                      0,
+                      3
+                    )}) ${sale.WebPhone.substring(
+                      3,
+                      6
+                    )}-${sale.WebPhone.substring(6)}`}
+                  </p>
+                </div>
+              )}
+              {sale.MozartOrderNumber && (
+                <div className="flex items-center space-x-2">
+                  <ClipboardIcon />
+                  <p>{sale.MozartOrderNumber}</p>
+                </div>
+              )}
+              {sale.WebComment && (
+                <div className="flex items-center space-x-2">
+                  <MessageIcon />
+                  <p>{sale.WebComment}</p>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="flex items-center space-x-4">
             <BoardConfirm send={sendBoardNotif} />
-            <PhoneConfirm phone={sale.Phone} send={sendPhoneNotif} />
+            <PhoneConfirm
+              phone={sale.WebPhone ? sale.WebPhone : sale.Phone}
+              send={sendPhoneNotif}
+            />
           </div>
         </>
       )}
@@ -329,7 +376,7 @@ const Sales = () => {
 
   const getSales = async () => {
     let sales = await (
-      await fetch("http://192.168.1.11:8000/fpos/recent/")
+      await fetch("http://192.168.1.86:8000/fpos/recent/")
     ).json();
     setSaleList(sales);
   };
@@ -353,7 +400,11 @@ const Sales = () => {
       <section className="w-1/2 p-4 space-y-4 h-full flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-wide">Recent Sales</h1>
-          <button type="button" className="p-2" onClick={refreshSales}>
+          <button
+            type="button"
+            className="p-2 rounded-lg"
+            onClick={refreshSales}
+          >
             <RefreshIcon className="w-6 h-6" />
           </button>
         </div>
