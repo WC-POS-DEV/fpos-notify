@@ -27,7 +27,11 @@ function createWindow() {
     },
   });
 
-  win.loadURL("http://localhost:3000");
+  if (dev) {
+    win.loadURL("http://localhost:3000");
+  } else {
+    win.loadFile("./dist/index.html");
+  }
   return win;
 }
 
