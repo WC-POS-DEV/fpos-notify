@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import IngredientList from "./views/IngredientList";
 import Notifications from "./views/Notifications";
 import Sales from "./views/Sales";
+import Settings from "./views/Settings";
 
 function App() {
   return (
@@ -25,6 +26,9 @@ function App() {
           </Route>
           <Route exact path="/notifications">
             <Notifications />
+          </Route>
+          <Route exact path="/settings">
+            <Settings />
           </Route>
         </Switch>
       </div>
