@@ -19,7 +19,6 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1024,
     height: 768,
-    // kiosk: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
@@ -37,7 +36,6 @@ function createWindow() {
 
 app.whenReady().then(() => {
   let win = createWindow();
-  console.log(dev);
 
   if (dev) {
     const {
@@ -50,6 +48,7 @@ app.whenReady().then(() => {
     );
     win.webContents.openDevTools();
   }
+  require("./ipc").setup();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
