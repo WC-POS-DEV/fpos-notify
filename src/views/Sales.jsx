@@ -12,17 +12,21 @@ import {
   SmartphoneIcon,
   UserIcon,
 } from "@iconicicons/react";
+import { useRecoilValue } from "recoil";
+
+import { settingsState } from "../recoil/atoms";
+import useNotify from "../hooks/useNotify";
 
 const ReceiptItem = (props) => {
   return (
     <>
-      {props.item.IsSeat ? (
+      {props.item.isSeat ? (
         <div className="bg-blue-600 p-2 rounded-lg">
-          Seat {props.item.BasePrice}
+          Seat {props.item.basePrice}
         </div>
       ) : (
-        <div className={`px-2 ${props.item.IsModifier ? "ml-4" : ""}`}>
-          {props.item.ReceiptDescription}
+        <div className={`px-2 ${props.item.isModifier ? "ml-4" : ""}`}>
+          {props.item.receiptDescription}
         </div>
       )}
     </>
@@ -78,10 +82,6 @@ const PhoneConfirm = (props) => {
     setCurrentPhone(props.phone === null ? "" : props.phone);
   }, [props.phone]);
 
-  // useEffect(() => {
-  //   setCurrentPhone(currentPhone.slice(0, 10));
-  // }, [currentPhone]);
-
   const backspace = () => {
     setCurrentPhone(currentPhone.slice(0, -1));
   };
@@ -106,63 +106,63 @@ const PhoneConfirm = (props) => {
             <button
               type="button"
               className="w-full bg-gray-600 p-2 text-center rounded-lg"
-              onClick={(e) => setCurrentPhone(currentPhone + "1")}
+              onClick={() => setCurrentPhone(currentPhone + "1")}
             >
               1
             </button>
             <button
               type="button"
               className="w-full bg-gray-600 p-2 text-center rounded-lg"
-              onClick={(e) => setCurrentPhone(currentPhone + "2")}
+              onClick={() => setCurrentPhone(currentPhone + "2")}
             >
               2
             </button>
             <button
               type="button"
               className="w-full bg-gray-600 p-2 text-center rounded-lg"
-              onClick={(e) => setCurrentPhone(currentPhone + "3")}
+              onClick={() => setCurrentPhone(currentPhone + "3")}
             >
               3
             </button>
             <button
               type="button"
               className="w-full bg-gray-600 p-2 text-center rounded-lg"
-              onClick={(e) => setCurrentPhone(currentPhone + "4")}
+              onClick={() => setCurrentPhone(currentPhone + "4")}
             >
               4
             </button>
             <button
               type="button"
               className="w-full bg-gray-600 p-2 text-center rounded-lg"
-              onClick={(e) => setCurrentPhone(currentPhone + "5")}
+              onClick={() => setCurrentPhone(currentPhone + "5")}
             >
               5
             </button>
             <button
               type="button"
               className="w-full bg-gray-600 p-2 text-center rounded-lg"
-              onClick={(e) => setCurrentPhone(currentPhone + "6")}
+              onClick={() => setCurrentPhone(currentPhone + "6")}
             >
               6
             </button>
             <button
               type="button"
               className="w-full bg-gray-600 p-2 text-center rounded-lg"
-              onClick={(e) => setCurrentPhone(currentPhone + "7")}
+              onClick={() => setCurrentPhone(currentPhone + "7")}
             >
               7
             </button>
             <button
               type="button"
               className="w-full bg-gray-600 p-2 text-center rounded-lg"
-              onClick={(e) => setCurrentPhone(currentPhone + "8")}
+              onClick={() => setCurrentPhone(currentPhone + "8")}
             >
               8
             </button>
             <button
               type="button"
               className="w-full bg-gray-600 p-2 text-center rounded-lg"
-              onClick={(e) => setCurrentPhone(currentPhone + "9")}
+              onClick={() => setCurrentPhone(currentPhone + "9")}
             >
               9
             </button>
@@ -176,7 +176,7 @@ const PhoneConfirm = (props) => {
             <button
               type="button"
               className="w-full bg-gray-600 p-2 text-center rounded-lg"
-              onClick={(e) => setCurrentPhone(currentPhone + "0")}
+              onClick={() => setCurrentPhone(currentPhone + "0")}
             >
               0
             </button>
@@ -224,19 +224,19 @@ const SaleItem = (props) => {
       className="p-2 flex items-center hover:bg-gray-900 rounded-xl cursor-pointer"
       onClick={() => props.handleClick(props.sale)}
     >
-      <p className="w-1/6">{props.sale.TicketNumber}</p>
+      <p className="w-1/6">{props.sale.ticketNumber}</p>
       <p className="w-1/2">
-        {props.sale.FirstName || props.sale.LastName
-          ? `${props.sale.FirstName} ${props.sale.LastName}`
-          : props.sale.CheckDescription}
+        {props.sale.firstName || props.sale.lastName
+          ? `${props.sale.firstName} ${props.sale.lastName}`
+          : props.sale.checkDescription}
       </p>
       <p className="w-1/6">
-        ${Math.floor(props.sale.Total / 100)}
-        <span className="text-xs">.{props.sale.Total % 100}</span>
+        ${Math.floor(props.sale.total / 100)}
+        <span className="text-xs">.{props.sale.total % 100}</span>
       </p>
       <p className="w-1/6 text-right text-sm">
         <span className="px-2 py-1 rounded-lg bg-green-600 whitespace-nowrap">
-          {props.sale.OrderType}
+          {props.sale.orderType}
         </span>
       </p>
     </div>
@@ -245,36 +245,63 @@ const SaleItem = (props) => {
 
 const SaleDetails = (props) => {
   const [sale, setSale] = useState(null);
+  const settings = useRecoilValue(settingsState);
+  const { sendBoardNotif, sendPhoneNotif } = useNotify();
 
   const getSale = async () => {
-    setSale(
-      await (
-        await fetch(`http://192.168.1.86:8000/fpos/sale/id/${props.saleID}/`)
-      ).json()
-    );
+    setSale({
+      ...(await (
+        await fetch(
+          `http://${settings.api.host}:${settings.api.port}/fpos/sale/id/${props.saleID}/`
+        )
+      ).json()),
+      items: await (
+        await fetch(
+          `http://${settings.api.host}:${settings.api.port}/fpos/sale/id/${props.saleID}/items/`
+        )
+      ).json(),
+    });
   };
 
   useEffect(async () => {
     props.saleID ? await getSale() : setSale(null);
   }, [props.saleID]);
 
-  const sendBoardNotif = async () => {
-    try {
-      await fetch(`http://192.168.1.86:8000/fpos/notify/${props.saleID}/`);
-    } catch (err) {
-      console.error(err);
-    }
+  const handleBoardSend = async () => {
+    await sendBoardNotif(settings.api.host, settings.api.port, sale.saleId);
   };
 
-  const sendPhoneNotif = async (phone) => {
-    try {
-      let phoneRes = await fetch(
-        `http://192.168.1.86:8000/fpos/phone/${props.saleID}/${phone}/`
-      );
-    } catch (err) {
-      console.log(err);
+  const handlePhoneSend = async (phone) => {
+    if (settings.notifications.board) {
+      await sendBoardNotif(settings.api.host, settings.api.port, sale.saleId);
     }
+    await sendPhoneNotif(
+      settings.api.host,
+      settings.api.port,
+      sale.saleId,
+      phone
+    );
   };
+
+  // const sendBoardNotif = async () => {
+  //   try {
+  //     await fetch(
+  //       `http://${settings.api.host}:${settings.api.port}/fpos/notify/${props.saleID}/`
+  //     );
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+
+  // const sendPhoneNotif = async (phone) => {
+  //   try {
+  //     await fetch(
+  //       `http://${settings.api.host}:${settings.api.port}/fpos/phone/${props.saleID}/${phone}/`
+  //     );
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   return (
     <>
@@ -282,9 +309,9 @@ const SaleDetails = (props) => {
         <>
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold tracking-wide space-x-4 flex items-center">
-              <span>Ticket #{sale.TicketNumber}</span>
+              <span>Ticket #{sale.ticketNumber}</span>
               <span className="px-2 py-1 text-base rounded-lg bg-green-600">
-                {sale.OrderType}
+                {sale.orderType}
               </span>
             </h1>
             <button type="button" onClick={props.handleClear}>
@@ -295,74 +322,78 @@ const SaleDetails = (props) => {
             <div className="flex items-center space-x-2 w-1/2">
               <UserIcon className="h-6 w-6" />
               <h2>
-                {sale.CustomerNumber
-                  ? `${sale.FirstName} ${sale.LastName}`
-                  : sale.CheckDescription}
+                {sale.customerNumber
+                  ? `${sale.firstName} ${sale.lastName}`
+                  : sale.checkDescription}
               </h2>
             </div>
             <div className="flex items-center space-x-2 w-1/2">
               <SmartphoneIcon className="h-6 w-6" />
               <h2>
-                {sale.CustomerNumber
-                  ? `(${sale.Phone.substring(0, 3)}) ${sale.Phone.substring(
+                {sale.customerNumber
+                  ? `(${sale.phone.substring(0, 3)}) ${sale.phone.substring(
                       3,
                       6
-                    )}-${sale.Phone.substring(6)}`
+                    )}-${sale.phone.substring(6)}`
                   : ""}
               </h2>
             </div>
           </div>
           <div className="flex-grow bg-gray-900 rounded-xl p-2 space-y-1 overflow-y-auto hide-scroll">
-            {sale.Items.map((item, index) => (
+            {sale.items.map((item, index) => (
               <ReceiptItem item={item} key={index} />
             ))}
           </div>
-          {(sale.WebLastName ||
-            sale.WebPhone ||
-            sale.MozartOrderNumber ||
-            sale.WebComment) && (
+          {(sale.webLastName ||
+            sale.webPhone ||
+            sale.mozartOrderNumber ||
+            sale.webComment) && (
             <div className="p-2 space-y-1 bg-gray-900 rounded-xl">
-              {sale.WebLastName && (
+              {sale.webLastName && (
                 <div className="flex items-center space-x-2">
                   <UserIcon className="h-6 w-6" />
-                  <p>{sale.WebLastName}</p>
+                  <p>{sale.webLastName}</p>
                 </div>
               )}
-              {sale.WebPhone && (
+              {sale.webPhone && (
                 <div className="flex items-center space-x-2">
                   <SmartphoneIcon />
                   <p>
-                    {`(${sale.WebPhone.substring(
+                    {`(${sale.webPhone.substring(
                       0,
                       3
-                    )}) ${sale.WebPhone.substring(
+                    )}) ${sale.webPhone.substring(
                       3,
                       6
-                    )}-${sale.WebPhone.substring(6)}`}
+                    )}-${sale.webPhone.substring(6)}`}
                   </p>
                 </div>
               )}
-              {sale.MozartOrderNumber && (
+              {sale.mozartOrderNumber && (
                 <div className="flex items-center space-x-2">
                   <ClipboardIcon />
-                  <p>{sale.MozartOrderNumber}</p>
+                  <p>{sale.mozartOrderNumber}</p>
                 </div>
               )}
-              {sale.WebComment && (
+              {sale.webComment && (
                 <div className="flex items-center space-x-2">
                   <MessageIcon />
-                  <p>{sale.WebComment}</p>
+                  <p>{sale.webComment}</p>
                 </div>
               )}
             </div>
           )}
 
           <div className="flex items-center space-x-4">
-            <BoardConfirm send={sendBoardNotif} />
-            <PhoneConfirm
-              phone={sale.WebPhone ? sale.WebPhone : sale.Phone}
-              send={sendPhoneNotif}
-            />
+            {settings.notifications.board && (
+              <BoardConfirm send={handleBoardSend} />
+            )}
+            {settings.notifications.phone && (
+              <PhoneConfirm
+                phone={sale.webPhone ? sale.webPhone : sale.phone}
+                send={handlePhoneSend}
+              />
+            )}
           </div>
         </>
       )}
@@ -373,10 +404,13 @@ const SaleDetails = (props) => {
 const Sales = () => {
   const [currentSale, setCurrentSale] = useState(null);
   const [saleList, setSaleList] = useState([]);
+  const settings = useRecoilValue(settingsState);
 
   const getSales = async () => {
     let sales = await (
-      await fetch("http://192.168.1.86:8000/fpos/recent/")
+      await fetch(
+        `http://${settings.api.host}:${settings.api.port}/fpos/sales/recent/`
+      )
     ).json();
     setSaleList(sales);
   };
@@ -420,7 +454,7 @@ const Sales = () => {
               {saleList.map((sale) => (
                 <SaleItem
                   sale={sale}
-                  key={sale.SaleID}
+                  key={sale.saleId}
                   handleClick={(sale) => setCurrentSale(sale)}
                 />
               ))}
@@ -431,7 +465,7 @@ const Sales = () => {
       <section className="w-1/2 bg-gray-800 p-4 space-y-4 h-full flex flex-col">
         {currentSale ? (
           <SaleDetails
-            saleID={currentSale.SaleID}
+            saleID={currentSale.saleId}
             handleClear={() => setCurrentSale(null)}
           />
         ) : (

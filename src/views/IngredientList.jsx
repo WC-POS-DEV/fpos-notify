@@ -15,6 +15,9 @@ import {
   TrashIcon,
   RefreshIcon,
 } from "@iconicicons/react";
+import { useRecoilValue } from "recoil";
+
+import { settingsState } from "../recoil/atoms";
 
 const AddMenu = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -210,7 +213,10 @@ const ManageMenu = (props) => {
       {currentMenu === "Storage" && (
         <div className="space-y-2 flex-grow overflow-y-auto hide-scroll">
           {props.storage.map((storage, index) => (
-            <div className="flex items-center justify-between space-x-2 py-2 px-4 rounded-lg bg-gray-900">
+            <div
+              className="flex items-center justify-between space-x-2 py-2 px-4 rounded-lg bg-gray-900"
+              key={index}
+            >
               <div className="flex items-center space-x-4">
                 <button
                   className="p-1 rounded-lg"
@@ -344,13 +350,13 @@ const IngredientPrintPreview = (props) => {
   useEffect(() => {
     if (props.ing) {
       let dateAdd = {};
-      dateAdd[props.ing.expiration_unit.toLowerCase()] =
-        props.ing.expiration_amount;
+      dateAdd[props.ing.expirationUnit.toLowerCase()] =
+        props.ing.expirationAmount;
       let futureDate = add(new Date(), dateAdd);
       setFormattedDate(format(futureDate, "PPpp"));
       setFormattedToday(format(new Date(), "PPpp"));
       let location = props.storage.find(
-        (location) => location.id === props.ing.storage_location
+        (location) => location.id === props.ing.storageLocation
       );
       location !== -1 ? setStorageName(location.name) : "";
     } else {
@@ -367,7 +373,7 @@ const IngredientPrintPreview = (props) => {
           <div className="flex items-center space-x-4">
             <h2>{formattedDate}</h2>
             <h2 className="text-gray-700">
-              {props.ing.expiration_amount} {props.ing.expiration_unit}
+              {props.ing.expirationAmount} {props.ing.expirationUnit}
             </h2>
           </div>
           <h3 className="text-xs text-gray-700">{formattedToday}</h3>
@@ -389,22 +395,21 @@ const IngredientDetail = (props) => {
       setIngredient({
         id: props.ing.id,
         name: props.ing.name,
-        group: props.ing.group.id,
-        storage_location:
-          props.ing.storage_location === -1
-            ? props.ing.storage_location.id
-            : props.storage[0].id,
-        expiration_amount: props.ing.expiration_amount,
-        expiration_unit: props.ing.expiration_unit,
+        group: props.ing.group ? props.ing.group : props.groups[0].id,
+        storageLocation: props.ing.storageLocation
+          ? props.ing.storageLocation
+          : props.storage[0].id,
+        expirationAmount: props.ing.expirationAmount,
+        expirationUnit: props.ing.expirationUnit,
       });
     } else if (props.createNew) {
       setIngredient({
         id: "",
         name: "",
         group: props.groups[0] ? props.groups[0].id : null,
-        storage_location: props.storage[0] ? props.storage[0].id : null,
-        expiration_amount: 6,
-        expiration_unit: "Hours",
+        storageLocation: props.storage[0] ? props.storage[0].id : null,
+        expirationAmount: 6,
+        expirationUnit: "Hours",
       });
     } else {
       setIngredient(null);
@@ -412,10 +417,10 @@ const IngredientDetail = (props) => {
   }, [props.ing]);
 
   const decrement = () => {
-    if (ingredient.expiration_amount > 1) {
+    if (ingredient.expirationAmount > 1) {
       setIngredient({
         ...ingredient,
-        expiration_amount: ingredient.expiration_amount - 1,
+        expirationAmount: ingredient.expirationAmount - 1,
       });
     }
   };
@@ -423,12 +428,12 @@ const IngredientDetail = (props) => {
   const increment = () => {
     setIngredient({
       ...ingredient,
-      expiration_amount: ingredient.expiration_amount + 1,
+      expirationAmount: ingredient.expirationAmount + 1,
     });
   };
 
   const validate = () => {
-    return ingredient.name && ingredient.expiration_amount > 0;
+    return ingredient.name && ingredient.expirationAmount > 0;
   };
 
   const save = () => {
@@ -488,22 +493,22 @@ const IngredientDetail = (props) => {
                   name={`${props.createNew ? "new-" : ""}ing-exp-amount`}
                   id={`${props.createNew ? "new-" : ""}ing-exp-amount`}
                   className="form-input text-center w-full rounded-lg bg-gray-600 p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
-                  value={ingredient.expiration_amount}
+                  value={ingredient.expirationAmount}
                   onChange={(e) =>
                     setIngredient({
                       ...ingredient,
-                      expiration_amount: e.target.value,
+                      expirationAmount: e.target.value,
                     })
                   }
                 />
                 <select
                   name={`${props.createNew ? "new-" : ""}ing-exp-unit`}
                   id={`${props.createNew ? "new-" : ""}ing-exp-unit`}
-                  value={ingredient.expiration_unit}
+                  value={ingredient.expirationUnit}
                   onChange={(e) =>
                     setIngredient({
                       ...ingredient,
-                      expiration_unit: e.target.value,
+                      expirationUnit: e.target.value,
                     })
                   }
                   className="form-select text-center w-full rounded-lg bg-gray-600 p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
@@ -544,7 +549,7 @@ const IngredientDetail = (props) => {
                   onChange={(e) =>
                     setIngredient({
                       ...ingredient,
-                      group: Number(e.target.value),
+                      group: e.target.value,
                     })
                   }
                 >
@@ -566,11 +571,11 @@ const IngredientDetail = (props) => {
                   name={`${props.createNew ? "new-" : ""}ing-storage`}
                   id={`${props.createNew ? "new-" : ""}ing-storage`}
                   className="form-select text-center w-full rounded-lg bg-gray-600 p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
-                  value={ingredient.storage_location}
+                  value={ingredient.storageLocation}
                   onChange={(e) =>
                     setIngredient({
                       ...ingredient,
-                      storage_location: Number(e.target.value),
+                      storageLocation: e.target.value,
                     })
                   }
                 >
@@ -728,10 +733,13 @@ const IngredientList = () => {
   const [storageLocations, setStorageLocations] = useState([]);
   const [newMenu, setNewMenu] = useState(null);
   const [manageMenuOpen, setManageMenuOpen] = useState(false);
+  const settings = useRecoilValue(settingsState);
 
   const getGroups = async () => {
     let groupRes = await (
-      await fetch("http://192.168.1.86:8000/ing/groups/")
+      await fetch(
+        `http://${settings.api.host}:${settings.api.port}/ing/items/groups/`
+      )
     ).json();
     setGroups(groupRes);
     setSimpleGroups(
@@ -751,7 +759,9 @@ const IngredientList = () => {
 
   const getStorageLocations = async () => {
     let storageRes = await (
-      await fetch("http://192.168.1.86:8000/ing/storage/")
+      await fetch(
+        `http://${settings.api.host}:${settings.api.port}/ing/storage/`
+      )
     ).json();
     setStorageLocations(
       storageRes.map((storage) => {
@@ -777,9 +787,12 @@ const IngredientList = () => {
 
   const deleteIngredient = async () => {
     try {
-      await fetch(`http://192.168.1.86:8000/ing/items/${currentIng.id}/`, {
-        method: "DELETE",
-      });
+      await fetch(
+        `http://${settings.api.host}:${settings.api.port}/ing/items/${currentIng.id}/`,
+        {
+          method: "DELETE",
+        }
+      );
       let groupIndex = groups.findIndex(
         (group) => group.id === currentIng.group.id
       );
@@ -798,80 +811,50 @@ const IngredientList = () => {
     try {
       let saveURL;
       let method;
-      if (ing.id) {
-        saveURL = `http://192.168.1.86:8000/ing/items/${ing.id}/`;
+      if (ing.id && ing.id !== "") {
+        saveURL = `http://${settings.api.host}:${settings.api.port}/ing/items/${ing.id}/`;
         method = "PUT";
       } else {
-        saveURL = `http://192.168.1.86:8000/ing/items/`;
+        delete ing.id;
+        saveURL = `http://${settings.api.host}:${settings.api.port}/ing/items/`;
         method = "POST";
       }
-      let ingredient = await (
+      await (
         await fetch(saveURL, {
           method,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(ing),
         })
       ).json();
-      let oldGroupIndex = groups.findIndex((group) => {
-        let oldIngIndex = group.ingredients.findIndex(
-          (oldIng) => oldIng.id === ingredient.id
-        );
-        return oldIngIndex !== -1;
-      });
-      let newGroupIndex = groups.findIndex(
-        (group) => group.id === ingredient.group
-      );
-      let newStorageIndex = storageLocations.findIndex(
-        (storage) => storage.id === ingredient.storage_location
-      );
-      console.log(newStorageIndex);
-      let groupCopy = [...groups];
-      if (oldGroupIndex !== -1) {
-        groupCopy[oldGroupIndex].ingredients = groupCopy[
-          oldGroupIndex
-        ].ingredients.filter((oldIng) => oldIng.id !== ingredient.id);
-      }
-      if (newGroupIndex !== -1) {
-        groupCopy[newGroupIndex].ingredients.push({
-          ...ingredient,
-          group: {
-            id: groupCopy[newGroupIndex].id,
-            name: groupCopy[newGroupIndex].name,
-          },
-          storage_location: {
-            id: storageLocations[newStorageIndex].id,
-            name: storageLocations[newStorageIndex].name,
-          },
-        });
-        groupCopy[newGroupIndex].ingredients.sort((a, b) =>
-          a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
-        );
-      }
-
-      setGroups(groupCopy);
+      await getGroups();
+      setNewMenu(null);
     } catch (err) {
       console.error(err);
     }
   };
 
   const handleGroupSave = async (name) => {
-    let newGroupRes = await fetch("http://192.168.1.86:8000/ing/groups/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
-    });
-    let groupCopy = [...groups, await newGroupRes.json()];
-    groupCopy.sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase());
-    setGroups(groupCopy);
+    await fetch(
+      `http://${settings.api.host}:${settings.api.port}/ing/groups/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      }
+    );
+    await getGroups();
     setNewMenu(null);
   };
 
   const handleStorageSave = async (name) => {
-    let newStorageRes = await fetch("http://192.168.1.86:8000/ing/storage/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
-    });
+    let newStorageRes = await fetch(
+      `http://${settings.api.host}:${settings.api.port}/ing/storage/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      }
+    );
     let newStorageObj = await newStorageRes.json();
     setStorageLocations([
       ...storageLocations,
@@ -890,7 +873,7 @@ const IngredientList = () => {
   const manageDeleteItem = async (type, index) => {
     if (type === "Groups") {
       await fetch(
-        `http://192.168.1.86:8000/ing/groups/${simpleGroups[index].id}/`,
+        `http://${settings.api.host}:${settings.api.port}/ing/groups/${simpleGroups[index].id}/`,
         {
           method: "DELETE",
         }
@@ -901,7 +884,7 @@ const IngredientList = () => {
       setGroups(groupsCopy);
     } else {
       await fetch(
-        `http://192.168.1.86:8000/ing/storage/${storageLocations[index].id}/`,
+        `http://${settings.api.host}:${settings.api.port}/ing/storage/${storageLocations[index].id}/`,
         {
           method: "DELETE",
         }
@@ -916,30 +899,24 @@ const IngredientList = () => {
   const saveManageEdit = async (type, index, name) => {
     if (type === "Groups") {
       await fetch(
-        `http://192.168.1.86:8000/ing/groups/${simpleGroups[index].id}/`,
+        `http://${settings.api.host}:${settings.api.port}/ing/groups/${simpleGroups[index].id}/`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: simpleGroups[index], name }),
         }
       );
-      let groupsCopy = [...groups];
-      groupsCopy[index].name = name;
-      groupsCopy.sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase());
-      setGroups(groupsCopy);
+      await getGroups();
     } else {
       await fetch(
-        `http://192.168.1.86:8000/ing/storage/${storageLocations[index].id}/`,
+        `http://${settings.api.host}:${settings.api.port}/ing/storage/${storageLocations[index].id}/`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: storageLocations[index], name }),
         }
       );
-      let locationsCopy = [...storageLocations];
-      locationsCopy[index].name = name;
-      locationsCopy.sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase());
-      setStorageLocations(locationsCopy);
+      await getStorageLocations();
     }
   };
 
@@ -955,15 +932,13 @@ const IngredientList = () => {
             <select
               name="group-nav-select"
               id="group-nav-select"
-              className="form-select text-center w-full rounded-lg bg-gray-600 p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
+              className="form-select text-center w-full rounded-lg bg-gray-600 p-2 px-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
               onChange={(e) => (location.href = e.target.value)}
             >
               {groups.map((group) => (
-                <>
-                  <option value={`#group-${group.id}`} key={group.id}>
-                    {group.name}
-                  </option>
-                </>
+                <option value={`#group-${group.id}`} key={group.id}>
+                  {group.name}
+                </option>
               ))}
             </select>
             <AddMenu open={setNewMenu} />
@@ -997,7 +972,7 @@ const IngredientList = () => {
         <div
           className={`${
             newMenu || manageMenuOpen ? "h-1/2" : "h-full"
-          } w-full p-2 rounded-xl flex flex-col overflow-y-auto bg-gray-800 relative`}
+          } w-full p-4 rounded-xl flex flex-col overflow-y-auto bg-gray-800 relative`}
         >
           <IngredientDetail
             ing={currentIng}

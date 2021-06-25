@@ -1,7 +1,12 @@
-const sendBoardNotif = async (saleID) => {
+const sendBoardNotif = async (host, port, saleId) => {
   try {
     let notifRes = await fetch(
-      `http://192.168.1.86:8000/fpos/notify/${saleID}/`
+      `http://${host}:${port}/fpos/notify/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ saleId }),
+      }
     );
     return await notifRes.json();
   } catch (err) {
@@ -10,10 +15,15 @@ const sendBoardNotif = async (saleID) => {
   }
 };
 
-const sendPhoneNotif = async (saleID, phone) => {
+const sendPhoneNotif = async (host, port, saleId, phone) => {
   try {
     let notifRes = await fetch(
-      `http://192.168.1.86:8000/fpos/phone/${saleID}/${phone}/`
+      `http://${host}:${port}/fpos/notify/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ saleId, phoneNumber: phone }),
+      }
     );
     return await notifRes.json();
   } catch (err) {

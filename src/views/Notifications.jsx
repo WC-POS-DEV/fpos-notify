@@ -1,40 +1,49 @@
 import React, { useEffect, useState } from "react";
 
 import { MonitorIcon, RefreshIcon, SmartphoneIcon } from "@iconicicons/react";
+import { useRecoilValue } from "recoil";
 
 import useNotify from "../hooks/useNotify";
+import { settingsState } from "../recoil/atoms";
 
 const InProgressItem = (props) => {
+  const settings = useRecoilValue(settingsState);
+
   return (
     <div className="flex items-center space-x-2 px-2 py-1 w-full">
-      <h3 className="w-1/6">{props.sale.TicketNumber}</h3>
+      <h3 className="w-1/6">{props.sale.ticketNumber}</h3>
       <p className="w-1/2">
-        {props.sale.FirstName || props.sale.LastName
-          ? `${props.sale.FirstName} ${props.sale.LastName}`
-          : props.sale.CheckDescription}
+        {props.sale.fistName || props.sale.lastName
+          ? `${props.sale.fistName ? props.sale.firstName + " " : ""}${
+              props.sale.lastName ? props.sale.lastName : ""
+            }`
+          : props.sale.checkDescription}
       </p>
       <div className="w-1/3 flex items-center justify-end space-x-2">
-        {(props.sale.Phone || props.sale.WebPhone) && (
+        {(props.sale.phone || props.sale.webPhone) &&
+          settings.notifications.phone && (
+            <button
+              type="button"
+              className="text-base bg-green-600 rounded-lg py-1 px-4 flex items-center justify-center space-x-2 focus:ring-green-600"
+              onClick={() =>
+                props.sendphone(
+                  props.sale.saleId,
+                  props.sale.webPhone ? props.sale.webPhone : props.sale.phone
+                )
+              }
+            >
+              <SmartphoneIcon className="h-6 w-6" />
+            </button>
+          )}
+        {settings.notifications.board && (
           <button
             type="button"
-            className="text-base bg-green-600 rounded-lg py-1 px-4 flex items-center justify-center space-x-2 focus:ring-green-600"
-            onClick={() =>
-              props.sendPhone(
-                props.sale.SaleID,
-                props.sale.WebPhone ? props.sale.WebPhone : props.sale.Phone
-              )
-            }
+            className="text-base bg-blue-600 rounded-lg py-1 px-4 flex items-center justify-center space-x-2"
+            onClick={() => props.sendBoard(props.sale.saleId)}
           >
-            <SmartphoneIcon className="h-6 w-6" />
+            <MonitorIcon className="h-6 w-6" />
           </button>
         )}
-        <button
-          type="button"
-          className="text-base bg-blue-600 rounded-lg py-1 px-4 flex items-center justify-center space-x-2"
-          onClick={() => props.sendBoard(props.sale.SaleID)}
-        >
-          <MonitorIcon className="h-6 w-6" />
-        </button>
       </div>
     </div>
   );
@@ -43,10 +52,10 @@ const InProgressItem = (props) => {
 const NotifItem = (props) => {
   return (
     <div className="flex items-center space-x-2 px-2 py-1 w-full">
-      <p className="w-1/6">{props.notif.TicketNumber}</p>
-      <p className="w-2/3">{props.notif.CheckDescription}</p>
+      <p className="w-1/6">{props.notif.ticketNumber}</p>
+      <p className="w-2/3">{props.notif.checkDescription}</p>
       <div className="w-1/6 flex items-center justify-end">
-        {props.notif.NotifType === "BOARD" ? (
+        {props.notif.type === "BOARD" ? (
           <MonitorIcon className="h-6 w-6" />
         ) : (
           <SmartphoneIcon className="h-6 w-6" />
@@ -61,13 +70,18 @@ const Notifications = () => {
   const [filteredNotifs, setFilteredNotifs] = useState([]);
   const [notifFilter, setNotifFilter] = useState("ALL");
   const { sendBoardNotif, sendPhoneNotif } = useNotify();
+  const settings = useRecoilValue(settingsState);
 
   const filterNotifs = () => {
-    if (notifs.Notifications) {
-      let filtered = notifs.Notifications.filter((notif) => {
-        return notifFilter === "ALL" || notifFilter === notif.NotifType;
+    if (notifs.notifications) {
+      let filtered = notifs.notifications.filter((notif) => {
+        return (
+          (notifFilter === "ALL" || notifFilter === notif.type) &&
+          ((notif.type === "BOARD" && settings.notifications.board) ||
+            (notif.type === "PHONE" && settings.notifications.phone))
+        );
       });
-      filtered.sort((a, b) => b.TicketNumber - a.TicketNumber);
+      filtered.sort((a, b) => b.ticketNumber - a.ticketNumber);
 
       setFilteredNotifs(filtered);
     } else {
@@ -75,44 +89,36 @@ const Notifications = () => {
     }
   };
 
-  const handleSendBoard = async (saleID, index) => {
-    let notif = await sendBoardNotif(saleID);
+  const handleSendBoard = async (saleId) => {
+    let notif = await sendBoardNotif(
+      settings.api.host,
+      settings.api.port,
+      saleId
+    );
     if (notif) {
-      let inProgressCopy = [...notifs.InProgress];
-      inProgressCopy.splice(index, 1);
-      setNotifs({
-        InProgress: inProgressCopy,
-        Notifications: [...notifs.Notifications, notif],
-      });
+      getNotifs();
     }
   };
 
-  const handleSendPhone = async (saleID, phone, index) => {
-    let notif = await sendPhoneNotif(saleID, phone);
+  const handleSendPhone = async (saleId, phone) => {
+    let notif = await sendPhoneNotif(
+      settings.api.host,
+      settings.api.port,
+      saleId,
+      phone
+    );
     if (notif) {
-      let inProgressCopy = [...notifs.InProgress];
-      inProgressCopy.splice(index, 1);
-      if (notif.Board && notif.Phone) {
-        setNotifs({
-          InProgress: inProgressCopy,
-          Notifications: [...notifs.Notifications, notif.Board, notif.Phone],
-        });
-      } else if (notif.Board) {
-        setNotifs({
-          InProgress: inProgressCopy,
-          Notifications: [...notifs.Notifications, notif.Board],
-        });
-      } else if (notif.Board) {
-        setNotifs({
-          InProgress: inProgressCopy,
-          Notifications: [...notifs.Notifications, notif.Phone],
-        });
-      }
+      await getNotifs();
+    }
+    if (settings.notifications.board) {
+      await sendBoardNotif(settings.api.host, settings.api.port, saleId);
     }
   };
 
   const getNotifs = async () => {
-    let notificationsRes = await fetch("http://192.168.1.86:8000/fpos/board/");
+    let notificationsRes = await fetch(
+      `http://${settings.api.host}:${settings.api.port}/fpos/board/`
+    );
     setNotifs(await notificationsRes.json());
   };
 
@@ -139,16 +145,14 @@ const Notifications = () => {
           <h2 className="w-1/3 text-right">Actions</h2>
         </div>
         <div className="p-2 bg-gray-800 rounded-xl flex-grow overflow-y-auto hide-scroll">
-          {notifs.InProgress && (
+          {notifs.inProgress && (
             <>
-              {notifs.InProgress.map((notif, index) => (
+              {notifs.inProgress.map((notif) => (
                 <InProgressItem
-                  key={notif.SaleID}
+                  key={notif.saleId}
                   sale={notif}
-                  sendBoard={(saleID) => handleSendBoard(saleID, index)}
-                  sendPhone={(saleID, phone) =>
-                    handleSendPhone(saleID, phone, index)
-                  }
+                  sendBoard={(saleId) => handleSendBoard(saleId)}
+                  sendphone={(saleId, phone) => handleSendPhone(saleId, phone)}
                 />
               ))}
             </>
@@ -158,17 +162,19 @@ const Notifications = () => {
       <div className="w-1/2 p-4 flex flex-col space-y-4 bg-gray-800">
         <div className="flex items-center justify-between pb-1">
           <h1 className="text-2xl font-bold tracking-wide">Ready</h1>
-          <select
-            name="notif-filter"
-            id="notif-filter"
-            className="form-select text-center rounded-lg bg-gray-600 p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
-            defaultValue="ALL"
-            onChange={(e) => setNotifFilter(e.target.value)}
-          >
-            <option value="ALL">All</option>
-            <option value="BOARD">Board</option>
-            <option value="PHONE">Phone</option>
-          </select>
+          {settings.notifications.board && settings.notifications.phone && (
+            <select
+              name="notif-filter"
+              id="notif-filter"
+              className="form-select text-center rounded-lg bg-gray-600 p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
+              defaultValue="ALL"
+              onChange={(e) => setNotifFilter(e.target.value)}
+            >
+              <option value="ALL">All</option>
+              <option value="BOARD">Board</option>
+              <option value="phone">PHONE</option>
+            </select>
+          )}
         </div>
         <div className="p-4 bg-green-600 rounded-xl flex items-center font-bold shadow-lg">
           <h2 className="w-1/6">Ticket</h2>
