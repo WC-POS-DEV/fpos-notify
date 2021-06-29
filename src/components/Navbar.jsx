@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import {
   BellIcon,
+  BookIcon,
   DashboardIcon,
   MenuIcon,
   MinimizeIcon,
@@ -33,7 +34,7 @@ const Navbar = () => {
   const settings = useRecoilValue(settingsState);
 
   return (
-    <nav className="h-screen bg-gray-800 p-4 space-y-8">
+    <nav className="h-screen bg-gray-800 p-4 space-y-8 relative z-30 overflow-y-scroll hide-scroll">
       {settings.pages.dashboard && (
         <NavItem
           to="/"
@@ -50,6 +51,12 @@ const Navbar = () => {
         <NavItem
           to="/inventory"
           icon={<TagIcon className="h-12 w-12 text-white" />}
+        />
+      )}
+      {settings.pages.waitlist && (
+        <NavItem
+          to="/waitlist"
+          icon={<BookIcon className="h-12 w-12 text-white" />}
         />
       )}
       {settings.pages.notifications && (

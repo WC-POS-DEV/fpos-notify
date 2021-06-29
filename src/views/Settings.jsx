@@ -67,7 +67,7 @@ const Settings = () => {
                   checked={settings.pages.dashboard}
                 />
                 <label htmlFor="dashboard-enable" className="text-lg">
-                  Dashboard Page
+                  Dashboard
                 </label>
               </fieldset>
               <fieldset className="flex items-center space-x-2">
@@ -103,7 +103,28 @@ const Settings = () => {
                   checked={settings.pages.inventory}
                 />
                 <label htmlFor="inventory-enable" className="text-lg">
-                  Inventory Page
+                  Inventory
+                </label>
+              </fieldset>
+              <fieldset className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  name="waitlist-enable"
+                  id="waitlist-enable"
+                  className="form-checkbox rounded-full h-8 w-8 text-green-600 focus:ring-offset-gray-800 focus:ring-green-600"
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      pages: {
+                        ...settings.pages,
+                        waitlist: e.target.checked,
+                      },
+                    })
+                  }
+                  checked={settings.pages.waitlist}
+                />
+                <label htmlFor="waitlist-enable" className="text-lg">
+                  Waitlist
                 </label>
               </fieldset>
               <fieldset className="flex items-center space-x-2">
@@ -124,7 +145,7 @@ const Settings = () => {
                   checked={settings.pages.notifications}
                 />
                 <label htmlFor="notifications-enable" className="text-lg">
-                  Notifications Page
+                  Notifications
                 </label>
               </fieldset>
             </form>

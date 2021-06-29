@@ -926,8 +926,12 @@ const IngredientList = () => {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-wide">Inventory</h1>
           <div className="flex items-center space-x-2">
-            <button type="button" className="p-1 rounded-lg">
-              <EditIcon className="h-6 w-6" onClick={toggleManageMenu} />
+            <button
+              type="button"
+              className="p-1 rounded-lg"
+              onClick={toggleManageMenu}
+            >
+              <EditIcon className="h-6 w-6" />
             </button>
             <select
               name="group-nav-select"

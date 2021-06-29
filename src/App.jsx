@@ -8,6 +8,7 @@ import IngredientList from "./views/IngredientList";
 import Notifications from "./views/Notifications";
 import Sales from "./views/Sales";
 import Settings from "./views/Settings";
+import Waitlist from "./views/Waitlist";
 
 function App() {
   return (
@@ -23,6 +24,9 @@ function App() {
           </Route>
           <Route exact path="/inventory">
             <IngredientList />
+          </Route>
+          <Route exact path="/waitlist">
+            <Waitlist />
           </Route>
           <Route exact path="/notifications">
             <Notifications />
