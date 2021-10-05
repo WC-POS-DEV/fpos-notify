@@ -24,8 +24,8 @@ const Settings = () => {
   };
 
   return (
-    <main className="h-screen w-full p-4">
-      <section className="w-full flex items-center justify-between">
+    <main className="w-full h-screen p-4">
+      <section className="flex items-center justify-between w-full">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl font-bold tracking-wide">App Settings</h1>
           <button
@@ -46,18 +46,18 @@ const Settings = () => {
       </section>
       <div className="flex space-x-4">
         <div className="w-1/2">
-          <section className="p-4 mt-4 rounded-xl bg-gray-800">
+          <section className="p-4 mt-4 bg-gray-800 rounded-xl">
             <h1 className="text-2xl font-bold tracking-wide">Pages</h1>
             <form
               onSubmit={(e) => e.preventDefault()}
-              className="space-y-4 pt-4"
+              className="pt-4 space-y-4"
             >
               <fieldset className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   name="dashboard-enable"
                   id="dashboard-enable"
-                  className="form-checkbox rounded-full h-8 w-8 text-green-600 focus:ring-offset-gray-800 focus:ring-green-600"
+                  className="w-8 h-8 text-green-600 rounded-full form-checkbox focus:ring-offset-gray-800 focus:ring-green-600"
                   onChange={(e) =>
                     setSettings({
                       ...settings,
@@ -75,7 +75,7 @@ const Settings = () => {
                   type="checkbox"
                   name="recent-sales-enable"
                   id="recent-sales-enable"
-                  className="form-checkbox rounded-full h-8 w-8 text-green-600 focus:ring-offset-gray-800 focus:ring-green-600"
+                  className="w-8 h-8 text-green-600 rounded-full form-checkbox focus:ring-offset-gray-800 focus:ring-green-600"
                   onChange={(e) =>
                     setSettings({
                       ...settings,
@@ -93,7 +93,7 @@ const Settings = () => {
                   type="checkbox"
                   name="inventory-enable"
                   id="inventory-enable"
-                  className="form-checkbox rounded-full h-8 w-8 text-green-600 focus:ring-offset-gray-800 focus:ring-green-600"
+                  className="w-8 h-8 text-green-600 rounded-full form-checkbox focus:ring-offset-gray-800 focus:ring-green-600"
                   onChange={(e) =>
                     setSettings({
                       ...settings,
@@ -111,7 +111,7 @@ const Settings = () => {
                   type="checkbox"
                   name="waitlist-enable"
                   id="waitlist-enable"
-                  className="form-checkbox rounded-full h-8 w-8 text-green-600 focus:ring-offset-gray-800 focus:ring-green-600"
+                  className="w-8 h-8 text-green-600 rounded-full form-checkbox focus:ring-offset-gray-800 focus:ring-green-600"
                   onChange={(e) =>
                     setSettings({
                       ...settings,
@@ -132,7 +132,7 @@ const Settings = () => {
                   type="checkbox"
                   name="notifications-enable"
                   id="notifications-enable"
-                  className="form-checkbox rounded-full h-8 w-8 text-green-600 focus:ring-offset-gray-800 focus:ring-green-600"
+                  className="w-8 h-8 text-green-600 rounded-full form-checkbox focus:ring-offset-gray-800 focus:ring-green-600"
                   onChange={(e) =>
                     setSettings({
                       ...settings,
@@ -150,18 +150,18 @@ const Settings = () => {
               </fieldset>
             </form>
           </section>
-          <section className="p-4 mt-4 rounded-xl bg-gray-800">
+          <section className="p-4 mt-4 bg-gray-800 rounded-xl">
             <h1 className="text-2xl font-bold tracking-wide">Notifications</h1>
             <form
               onSubmit={(e) => e.preventDefault()}
-              className="space-y-4 pt-4"
+              className="pt-4 space-y-4"
             >
               <fieldset className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   name="board-notifications-enable"
                   id="board-notifications-enable"
-                  className="form-checkbox rounded-full h-8 w-8 text-green-600 focus:ring-offset-gray-800 focus:ring-green-600"
+                  className="w-8 h-8 text-green-600 rounded-full form-checkbox focus:ring-offset-gray-800 focus:ring-green-600"
                   onChange={(e) =>
                     setSettings({
                       ...settings,
@@ -182,7 +182,7 @@ const Settings = () => {
                   type="checkbox"
                   name="phone-notifications-enable"
                   id="phone-notifications-enable"
-                  className="form-checkbox rounded-full h-8 w-8 text-green-600 focus:ring-offset-gray-800 focus:ring-green-600"
+                  className="w-8 h-8 text-green-600 rounded-full form-checkbox focus:ring-offset-gray-800 focus:ring-green-600"
                   onChange={(e) =>
                     setSettings({
                       ...settings,
@@ -202,11 +202,11 @@ const Settings = () => {
           </section>
         </div>
         <div className="w-1/2">
-          <section className="p-4 mt-4 rounded-xl bg-gray-800">
+          <section className="p-4 mt-4 bg-gray-800 rounded-xl">
             <h1 className="text-2xl font-bold tracking-wide">API Server</h1>
             <form
               onSubmit={(e) => e.preventDefault()}
-              className="space-y-4 pt-4"
+              className="pt-4 space-y-4"
             >
               <fieldset className="space-y-2">
                 <label
@@ -219,7 +219,7 @@ const Settings = () => {
                   type="text"
                   name="api-server-host"
                   id="api-server-host"
-                  className="form-input w-full rounded-lg bg-gray-600 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
+                  className="w-full p-2 mt-1 bg-gray-600 rounded-lg form-input focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
                   placeholder="192.168.50.99"
                   onChange={(e) =>
                     setSettings({
@@ -241,7 +241,7 @@ const Settings = () => {
                   type="text"
                   name="api-server-port"
                   id="api-server-port"
-                  className="form-input w-full rounded-lg bg-gray-600 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
+                  className="w-full p-2 mt-1 bg-gray-600 rounded-lg form-input focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
                   placeholder="8000"
                   onChange={(e) =>
                     setSettings({
@@ -254,9 +254,16 @@ const Settings = () => {
               </fieldset>
             </form>
           </section>
+          <section className="p-4 mt-4 bg-gray-800 rounded-xl">
+            <h1 className="text-2xl font-bold tracking-wide">Label Printer</h1>
+            <form
+              onSubmit={(e) => e.preventDefault()}
+              className="pt-4 space-y-4"
+            ></form>
+          </section>
           <form
             onSubmit={(e) => e.preventDefault()}
-            className="p-4 mt-4 rounded-xl bg-gray-800 flex items-center space-x-4"
+            className="flex items-center p-4 mt-4 space-x-4 bg-gray-800 rounded-xl"
           >
             <label
               htmlFor="home-page-select"
@@ -267,7 +274,7 @@ const Settings = () => {
             <select
               name="home-page-select"
               id="home-page-select"
-              className="form-select w-full text-center rounded-lg bg-gray-600 p-2 px-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
+              className="w-full p-2 px-4 text-center bg-gray-600 rounded-lg form-select focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
               onChange={(e) =>
                 setSettings({ ...settings, home: e.target.value })
               }
@@ -279,16 +286,16 @@ const Settings = () => {
               <option value="NOTIFICATIONS">Notifications</option>
             </select>
           </form>
-          <section className="flex items-center space-x-2 mt-4">
+          <section className="flex items-center mt-4 space-x-2">
             <button
               type="button"
-              className="w-1/2 text-base bg-gray-800 rounded-lg p-2 flex items-center justify-center space-x-2"
+              className="flex items-center justify-center w-1/2 p-2 space-x-2 text-base bg-gray-800 rounded-lg"
             >
               Cancel
             </button>
             <button
               type="button"
-              className="w-1/2 text-base bg-green-600 rounded-lg p-2 flex items-center justify-center space-x-2"
+              className="flex items-center justify-center w-1/2 p-2 space-x-2 text-base bg-green-600 rounded-lg"
               onClick={saveSettings}
             >
               Save

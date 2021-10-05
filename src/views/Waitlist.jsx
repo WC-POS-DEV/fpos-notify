@@ -19,6 +19,8 @@ import {
   SmartphoneIcon,
   SpinnerIcon,
   TableRowsIcon,
+  TrashIcon,
+  WarningTriangleIcon,
 } from "@iconicicons/react";
 import { useRecoilValue } from "recoil";
 
@@ -111,10 +113,10 @@ const Table = (props) => {
         <p className="whitespace-nowrap">{props.table.tableName}</p>
         {props.table.saleId && (
           <>
-            <p className="whitespace-nowrap text-center">
+            <p className="text-center whitespace-nowrap">
               {props.table.checkNumber}
             </p>
-            <p className="whitespace-nowrap text-center">{props.table.age}m</p>
+            <p className="text-center whitespace-nowrap">{props.table.age}m</p>
           </>
         )}
       </div>
@@ -178,17 +180,17 @@ const TableGrid = (props) => {
   return (
     <>
       {props.isOpen && (
-        <div className="fixed flex items-center justify-center inset-0 bg-gray-800 bg-opacity-90 p-8">
-          <div className="ml-24 h-full w-full bg-gray-700 rounded-xl shadow-lg border-4 border-blue-600 overflow-hidden relative">
+        <div className="fixed inset-0 flex items-center justify-center p-8 bg-gray-800 bg-opacity-90">
+          <div className="relative w-full h-full ml-24 overflow-hidden bg-gray-700 border-4 border-blue-600 shadow-lg rounded-xl">
             {isLoading ? (
-              <div className="absolute inset-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20">
+              <div className="absolute w-20 h-20 transform -translate-x-1/2 -translate-y-1/2 inset-1/2">
                 <SpinnerIcon className="w-20 h-20 animate-spin" />
               </div>
             ) : (
               <div className="h-full mt-2">
                 <div className="flex pl-4 pr-20">
-                  <div className="w-full flex bg-gray-800 px-4 py-2 space-x-4 overflow-x-scroll hide-scroll rounded-lg">
-                    <h2 className="font-bold tracking-wide text-xl pr-4 border-r-2 border-gray-400 px-4 flex items-center text-center">
+                  <div className="flex w-full px-4 py-2 space-x-4 overflow-x-scroll bg-gray-800 rounded-lg hide-scroll">
+                    <h2 className="flex items-center px-4 pr-4 text-xl font-bold tracking-wide text-center border-r-2 border-gray-400">
                       Rooms
                     </h2>
                     {rooms.map((room, index) => {
@@ -208,7 +210,7 @@ const TableGrid = (props) => {
                   </div>
                 </div>
                 <div className="h-full p-4 overflow-scroll hide-scroll">
-                  <div className="h-full relative mb-24">
+                  <div className="relative h-full mb-24">
                     {filteredTables.map((table) => {
                       return <Table table={table} key={table.layoutTableId} />;
                     })}
@@ -218,16 +220,16 @@ const TableGrid = (props) => {
             )}
           </div>
           <button
-            className="absolute top-0 right-0 mt-12 mr-12 rounded-xl bg-gray-800 p-2"
+            className="absolute top-0 right-0 p-2 mt-12 mr-12 bg-gray-800 rounded-xl"
             onClick={props.onClose}
           >
-            <CloseIcon className="h-8 w-8" />
+            <CloseIcon className="w-8 h-8" />
           </button>
           <button
-            className="absolute top-0 right-0 mt-12 mr-12 rounded-xl bg-gray-800 p-2"
+            className="absolute top-0 right-0 p-2 mt-12 mr-12 bg-gray-800 rounded-xl"
             onClick={props.onClose}
           >
-            <CloseIcon className="h-8 w-8" />
+            <CloseIcon className="w-8 h-8" />
           </button>
         </div>
       )}
@@ -291,16 +293,16 @@ const TableList = (props) => {
   return (
     <>
       {props.isOpen && (
-        <div className="fixed flex items-center justify-center inset-0 bg-gray-800 bg-opacity-90 p-8">
-          <div className="ml-24 h-full w-full bg-gray-700 rounded-xl shadow-lg border-4 border-blue-600 overflow-hidden relative">
+        <div className="fixed inset-0 flex items-center justify-center p-8 bg-gray-800 bg-opacity-90">
+          <div className="relative w-full h-full ml-24 overflow-hidden bg-gray-700 border-4 border-blue-600 shadow-lg rounded-xl">
             {isLoading ? (
-              <div className="absolute inset-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20">
+              <div className="absolute w-20 h-20 transform -translate-x-1/2 -translate-y-1/2 inset-1/2">
                 <SpinnerIcon className="w-20 h-20 animate-spin" />
               </div>
             ) : (
-              <div className="flex space-x-4 h-full">
-                <div className="h-full w-1/3 bg-gray-800 p-4 space-y-4 overflow-y-scroll hide-scroll">
-                  <h2 className="font-bold tracking-wide text-xl pb-2 border-b-2 border-gray-400 px-4 text-center">
+              <div className="flex h-full space-x-4">
+                <div className="w-1/3 h-full p-4 space-y-4 overflow-y-scroll bg-gray-800 hide-scroll">
+                  <h2 className="px-4 pb-2 text-xl font-bold tracking-wide text-center border-b-2 border-gray-400">
                     Rooms
                   </h2>
                   {rooms.map((room, index) => {
@@ -319,8 +321,8 @@ const TableList = (props) => {
                   })}
                 </div>
                 <div className="w-full overflow-y-auto hide-scroll">
-                  <div className="w-full pr-20 py-4">
-                    <div className="px-4 py-2 rounded-lg bg-gray-800 w-full flex items-center font-bold tracking-wide">
+                  <div className="w-full py-4 pr-20">
+                    <div className="flex items-center w-full px-4 py-2 font-bold tracking-wide bg-gray-800 rounded-lg">
                       <h3 className="w-1/3">Table</h3>
                       <h3 className="w-1/3">Server</h3>
                       <h3 className="w-1/6 text-right">Guests</h3>
@@ -336,7 +338,7 @@ const TableList = (props) => {
                             key={table.layoutTableId}
                           >
                             <p className="w-1/3">{table.tableName}</p>
-                            <p className="w-1/3 truncate overflow-x-hidden">
+                            <p className="w-1/3 overflow-x-hidden truncate">
                               {table.employeeName}
                             </p>
                             <p className="w-1/6 text-right">
@@ -346,7 +348,7 @@ const TableList = (props) => {
                                 </>
                               ) : (
                                 <>
-                                  <span className="text-blue-600 font-bold">
+                                  <span className="font-bold text-blue-600">
                                     &mdash;
                                   </span>
                                 </>
@@ -357,7 +359,7 @@ const TableList = (props) => {
                                 <>{table.age}m</>
                               ) : (
                                 <>
-                                  <span className="text-blue-600 font-bold">
+                                  <span className="font-bold text-blue-600">
                                     &mdash;
                                   </span>
                                 </>
@@ -373,10 +375,10 @@ const TableList = (props) => {
             )}
           </div>
           <button
-            className="absolute top-0 right-0 mt-12 mr-12 rounded-xl bg-gray-800 p-2"
+            className="absolute top-0 right-0 p-2 mt-12 mr-12 bg-gray-800 rounded-xl"
             onClick={props.onClose}
           >
-            <CloseIcon className="h-8 w-8" />
+            <CloseIcon className="w-8 h-8" />
           </button>
         </div>
       )}
@@ -462,7 +464,7 @@ const NewGuest = (props) => {
           type="text"
           id="guest-name"
           name="guest-name"
-          className="form-input w-full rounded-lg bg-gray-600 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
+          className="w-full p-2 mt-1 bg-gray-600 rounded-lg form-input focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
           placeholder="Jane Doe"
           onChange={(e) => setGuest({ ...guest, name: e.target.value })}
           value={guest.name}
@@ -477,7 +479,7 @@ const NewGuest = (props) => {
             type="text"
             id="guest-phone"
             name="guest-phone"
-            className="form-input w-full rounded-lg bg-gray-600 p-2 mt-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
+            className="w-full p-2 mt-1 bg-gray-600 rounded-lg form-input focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
             placeholder="7701234567"
             onChange={(e) => setGuest({ ...guest, phone: e.target.value })}
             value={guest.phone}
@@ -493,25 +495,25 @@ const NewGuest = (props) => {
               min="1"
               name="party-size"
               id="party-size"
-              className="form-input w-full rounded-lg bg-gray-600 p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
+              className="w-full p-2 bg-gray-600 rounded-lg form-input focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
               onChange={(e) =>
                 setGuest({ ...guest, partySize: e.target.value })
               }
               value={guest.partySize}
             />
             <button
-              className=" bg-gray-600 rounded-lg px-2"
+              className="px-2 bg-gray-600 rounded-lg "
               type="button"
               onClick={decrementPartySize}
             >
-              <MinusIcon className="h-6 w-6" />
+              <MinusIcon className="w-6 h-6" />
             </button>
             <button
-              className=" bg-blue-600 rounded-lg px-2"
+              className="px-2 bg-blue-600 rounded-lg "
               type="button"
               onClick={incrementPartySize}
             >
-              <PlusIcon className="h-6 w-6" />
+              <PlusIcon className="w-6 h-6" />
             </button>
           </div>
         </fieldset>
@@ -521,14 +523,14 @@ const NewGuest = (props) => {
         <div className="flex space-x-2">
           <input
             type="text"
-            className="form-input w-full rounded-lg bg-gray-600 p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
+            className="w-full p-2 bg-gray-600 rounded-lg form-input focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
             onChange={(e) => setGuest({ ...guest, quoteVal: e.target.value })}
             value={guest.quoteVal}
           />
           <select
             name="quote-unit"
             id="quote-unit"
-            className="form-select text-center w-full rounded-lg bg-gray-600 p-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
+            className="w-full p-2 text-center bg-gray-600 rounded-lg form-select focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600"
             onChange={(e) => setGuest({ ...guest, quoteUnit: e.target.value })}
             value={guest.quoteUnit}
           >
@@ -536,32 +538,32 @@ const NewGuest = (props) => {
             <option value="hours">Hours</option>
           </select>
           <button
-            className=" bg-gray-600 rounded-lg px-2"
+            className="px-2 bg-gray-600 rounded-lg "
             type="button"
             onClick={decrementQuote}
           >
-            <MinusIcon className="h-6 w-6" />
+            <MinusIcon className="w-6 h-6" />
           </button>
           <button
-            className=" bg-blue-600 rounded-lg px-2"
+            className="px-2 bg-blue-600 rounded-lg "
             type="button"
             onClick={incrementQuote}
           >
-            <PlusIcon className="h-6 w-6" />
+            <PlusIcon className="w-6 h-6" />
           </button>
         </div>
       </fieldset>
-      <fieldset className="flex space-x-2 pt-2">
-        <button className="bg-gray-600 rounded-lg p-2" onClick={resetGuest}>
-          <RefreshIcon className="h-6 w-6" />
+      <fieldset className="flex pt-2 space-x-2">
+        <button className="p-2 bg-gray-600 rounded-lg" onClick={resetGuest}>
+          <RefreshIcon className="w-6 h-6" />
         </button>
         <button
           type="button"
-          className="bg-blue-600 rounded-lg p-2 w-full flex items-center justify-center space-x-2 text-sm"
+          className="flex items-center justify-center w-full p-2 space-x-2 text-sm bg-blue-600 rounded-lg"
           disabled={isLoading}
           onClick={postGuest}
         >
-          <FileIcon className="h-6 w-6" />
+          <FileIcon className="w-6 h-6" />
           <span>Save</span>
         </button>
       </fieldset>
@@ -571,20 +573,90 @@ const NewGuest = (props) => {
 
 const Guest = (props) => {
   let now = new Date();
+  const [messagePromptOpen, setMessagePromptOpen] = useState(false);
+  const [seatPromptOpen, setSeatPromptOpen] = useState(false);
+  const settings = useRecoilValue(settingsState);
+
+  const deleteGuest = async () => {
+    await fetch(
+      `http://${settings.api.host}:${settings.api.port}/waitlist/${props.guest.id}/`,
+      { method: "DELETE" }
+    );
+    props.onDelete(props.guest.id);
+  };
+
+  const messageGuest = async () => {
+    let messageRes = await fetch(
+      `http://${settings.api.host}:${settings.api.port}/waitlist/message/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: props.guest.id,
+        }),
+      }
+    );
+    let messageObj = await messageRes.json();
+    props.onUpdate({
+      ...messageObj,
+      quoteTime: parseISO(messageObj.quoteTime),
+    });
+  };
+
   return (
     <div
       className={`w-full p-4 rounded-lg flex space-x-4 ${
         props.index % 2 === 1 ? "bg-gray-900" : ""
       }`}
     >
-      <button className="p-1 rounded-lg border-2 border-blue-600 hover:bg-blue-600">
-        <GridIcon />
-      </button>
-      <p className="w-1/2 flex items-center space-x-2">
-        <span className="px-3 py-1 block bg-gray-600 rounded-lg font-bold">
+      <div className={`${seatPromptOpen ? "relative" : ""}`}>
+        <button
+          className={`p-1 rounded-lg border-2 border-blue-600 hover:bg-blue-600 ${
+            seatPromptOpen ? "relative z-20" : ""
+          }`}
+          onClick={() => setSeatPromptOpen(!seatPromptOpen)}
+        >
+          <GridIcon />
+        </button>
+        {seatPromptOpen && (
+          <>
+            <div className="absolute top-0 z-20 p-2 space-y-2 overflow-hidden text-white bg-gray-700 rounded-lg shadow-lg left-12">
+              <button className="flex items-center justify-start w-full px-2 py-1 space-x-2 text-sm font-semibold text-left whitespace-nowrap focus:ring-0 focus:ring-transparent focus:ring-offset-transparent">
+                <GridIcon />
+                <span>Table Layout</span>
+              </button>
+              <button className="flex items-center justify-start w-full px-2 py-1 space-x-2 text-sm font-semibold text-left whitespace-nowrap focus:ring-0 focus:ring-transparent focus:ring-offset-transparent">
+                <TableRowsIcon />
+                <span>List View</span>
+              </button>
+              <button
+                className="flex items-center justify-start w-full px-2 py-1 space-x-2 text-xs font-semibold text-left whitespace-nowrap focus:ring-0 focus:ring-transparent focus:ring-offset-transparent"
+                onClick={deleteGuest}
+              >
+                <TrashIcon />
+                <span>Delete</span>
+              </button>
+              <button
+                className="flex items-center justify-start w-full px-2 py-1 space-x-2 text-xs font-semibold text-left rounded whitespace-nowrap focus:ring-red-600 focus:ring-offset-gray-700"
+                onClick={() => setSeatPromptOpen(false)}
+              >
+                <CloseIcon />
+                <span>Cancel</span>
+              </button>
+            </div>
+            <div
+              className="fixed inset-0 z-10 bg-gray-800 bg-opacity-50"
+              onClick={() => setSeatPromptOpen(false)}
+            ></div>
+          </>
+        )}
+      </div>
+
+      <p className="flex items-center w-1/2 space-x-2">
+        <span className="block px-3 py-1 font-bold bg-gray-600 rounded-lg">
           {props.guest.partySize}
         </span>
-        <span className="whitespace-nowrap font-bold tracking-wide">
+        <span className="font-bold tracking-wide truncate whitespace-nowrap">
           {props.guest.customerName}
         </span>
 
@@ -603,9 +675,58 @@ const Guest = (props) => {
       >
         {format(props.guest.quoteTime, "p")}
       </p>
-      <button className="p-1 rounded-lg border-2 border-green-600 hover:bg-green-600 focus:ring-green-600">
-        <MessageIcon />
-      </button>
+      <div className={`${messagePromptOpen ? "relative" : ""}`}>
+        <button
+          className={`p-1 rounded-lg border-2 border-green-600 hover:bg-green-600 focus:ring-green-600 ${
+            messagePromptOpen ? "relative z-20" : ""
+          }`}
+          onClick={() => setMessagePromptOpen(!messagePromptOpen)}
+        >
+          <MessageIcon />
+        </button>
+        {messagePromptOpen && (
+          <>
+            <div className="absolute top-0 z-20 p-2 space-y-2 overflow-hidden text-white bg-gray-700 rounded-lg shadow-lg right-12">
+              <div className="flex items-center justify-center w-full p-2 space-x-2 text-center">
+                {props.guest.status === "WAITING" ? (
+                  <SmartphoneIcon />
+                ) : (
+                  <WarningTriangleIcon className="text-yellow-400" />
+                )}
+                <span className="whitespace-nowrap">
+                  {`(${props.guest.phoneNumber.substring(
+                    0,
+                    3
+                  )}) ${props.guest.phoneNumber.substring(
+                    3,
+                    6
+                  )}-${props.guest.phoneNumber.substring(6)}`}
+                </span>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <button
+                  className="flex items-center justify-center w-full p-2 space-x-2 text-sm font-semibold text-left bg-green-600 rounded whitespace-nowrap focus:ring-green-600 focus:ring-offset-gray-700"
+                  onClick={messageGuest}
+                >
+                  <MessageIcon />
+                  <span>Send Message</span>
+                </button>
+                <button
+                  className="flex items-center justify-center w-full p-2 space-x-2 text-xs font-semibold text-left rounded whitespace-nowrap focus:ring-red-600 focus:ring-offset-gray-700"
+                  onClick={() => setMessagePromptOpen(false)}
+                >
+                  <CloseIcon className="w-4 h-4" />
+                  <span>Cancel</span>
+                </button>
+              </div>
+            </div>
+            <div
+              className="fixed inset-0 z-10 bg-gray-800 bg-opacity-50"
+              onClick={() => setMessagePromptOpen(false)}
+            ></div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
@@ -625,22 +746,23 @@ const Waitlist = () => {
       console.log(guest.quoteTime);
       return { ...guest, quoteTime: parseISO(guest.quoteTime) };
     });
-    console.log(waitlistArray);
     waitlistArray.sort((a, b) => compareAsc(a.quoteTime, b.quoteTime));
-    console.log(waitlistArray);
     setWaitlist(waitlistArray);
   }, []);
 
   const addGuest = (guest) => {
-    console.log("added", guest);
     setWaitlist([
       ...waitlist,
       { ...guest, quoteTime: parseISO(guest.quoteTime) },
     ]);
   };
 
+  const removeGuest = (id) => {
+    setWaitlist(waitlist.filter((guest) => guest.id !== id));
+  };
+
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex w-full h-screen">
       <TableGrid
         isOpen={showTableGrid}
         onClose={() => setShowTableGrid(false)}
@@ -649,7 +771,7 @@ const Waitlist = () => {
         isOpen={showTableList}
         onClose={() => setShowTableList(false)}
       />
-      <div className="w-1/2 p-4 flex flex-col space-y-4">
+      <div className="flex flex-col w-1/2 p-4 space-y-4">
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold tracking-wide">
             Currently Waiting
@@ -660,44 +782,49 @@ const Waitlist = () => {
               className="p-2 rounded-lg"
               onClick={() => setShowTableGrid(true)}
             >
-              <GridIcon className="h-6 w-6" />
+              <GridIcon className="w-6 h-6" />
             </button>
             <button
               type="button"
               className="p-2 rounded-lg"
               onClick={() => setShowTableList(true)}
             >
-              <TableRowsIcon className="h-6 w-6" />
+              <TableRowsIcon className="w-6 h-6" />
             </button>
           </div>
         </div>
-        <div className="p-2 bg-gray-800 rounded-xl flex-grow overflow-y-auto hide-scroll">
+        <div className="flex-grow p-2 overflow-y-auto bg-gray-800 rounded-xl hide-scroll">
           {waitlist.map((guest, index) => (
-            <Guest guest={guest} index={index} key={guest.id} />
+            <Guest
+              guest={guest}
+              index={index}
+              key={guest.id}
+              onDelete={removeGuest}
+            />
           ))}
         </div>
-        <div className="p-2 space-y-2 bg-gray-800 rounded-xl overflow-y-auto hide-scroll">
-          <div className="flex items-center justify-between font-bold tracking-wide text-lg">
+        <div className="p-2 space-y-2 overflow-y-auto bg-gray-800 rounded-xl hide-scroll">
+          <div className="flex items-center justify-between text-lg font-bold tracking-wide">
             <h2>Avg Wait Time</h2>
             <h2>14m</h2>
           </div>
-          <div className="flex items-center justify-between font-bold tracking-wide text-lg">
+          <div className="flex items-center justify-between text-lg font-bold tracking-wide">
             <h2>Open Tables</h2>
             <h2>14 / 28</h2>
           </div>
-          <div className="flex items-center justify-between font-bold tracking-wide text-lg">
+          <div className="flex items-center justify-between text-lg font-bold tracking-wide">
             <h2>Messaged Guests</h2>
             <h2>4 / 20</h2>
           </div>
         </div>
       </div>
-      <div className="w-1/2 p-4 flex flex-col space-y-4">
+      <div className="flex flex-col w-1/2 p-4 space-y-4">
         <h1 className="text-2xl font-bold tracking-wide">New Guest</h1>
-        <div className="p-4 bg-gray-800 rounded-xl overflow-y-auto hide-scroll">
+        <div className="p-4 overflow-y-auto bg-gray-800 rounded-xl hide-scroll">
           <NewGuest onAdd={addGuest} />
         </div>
         <h1 className="text-2xl font-bold tracking-wide">Recently Seated</h1>
-        <div className="p-2 bg-gray-800 rounded-xl flex-grow overflow-y-auto hide-scroll"></div>
+        <div className="flex-grow p-2 overflow-y-auto bg-gray-800 rounded-xl hide-scroll"></div>
       </div>
     </div>
   );

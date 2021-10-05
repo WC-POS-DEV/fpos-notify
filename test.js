@@ -26,21 +26,7 @@ function createWindow() {
       contextIsolation: false,
     },
   });
-
-  if (dev) {
-    win.loadURL("http://localhost:8000");
-  } else {
-    createServer({
-      configFile: true,
-      root: __dirname,
-      server: {
-        port: 8000,
-      },
-    }).then((server) => {
-      server.listen();
-      win.loadURL("http://localhost:8000");
-    });
-  }
+  win.loadURL("http://localhost:8000");
   return win;
 }
 

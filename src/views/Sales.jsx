@@ -283,26 +283,6 @@ const SaleDetails = (props) => {
     );
   };
 
-  // const sendBoardNotif = async () => {
-  //   try {
-  //     await fetch(
-  //       `http://${settings.api.host}:${settings.api.port}/fpos/notify/${props.saleID}/`
-  //     );
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
-  // const sendPhoneNotif = async (phone) => {
-  //   try {
-  //     await fetch(
-  //       `http://${settings.api.host}:${settings.api.port}/fpos/phone/${props.saleID}/${phone}/`
-  //     );
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
   return (
     <>
       {sale && (
